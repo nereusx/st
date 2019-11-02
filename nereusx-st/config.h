@@ -9,10 +9,10 @@
 //static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
 //static char *font = "XSG Term 189:pixelsize=18:antialias=true:autohint=true";
 //static char *font = "XSG S240:pixelsize=24:antialias=true:autohint=true";
-static char *font = "Iosevka Term:pixelsize=18:antialias=true:autohint=true";
+static char *font = "Iosevka Term:pixelsize=17:antialias=true:autohint=true";
 static int borderpx = 0;
 /* Default columns and rows numbers */
-static unsigned int cols = 132;
+static unsigned int cols = 140;
 static unsigned int rows = 35;
 
 /*
