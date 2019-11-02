@@ -11,3 +11,4 @@ Suckless simple terminal (https://st.suckless.org/)
 ## Modifications:
 * Copy-mode: Ctrl-Shift-A
 * Move-mode: serveral
+* More icons added
