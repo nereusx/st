@@ -7,9 +7,13 @@
  */
 // ndc
 //static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
-static char *font = "XSG Term 189:pixelsize=18:antialias=true:autohint=true";
+//static char *font = "XSG Term 189:pixelsize=18:antialias=true:autohint=true";
 //static char *font = "XSG S240:pixelsize=24:antialias=true:autohint=true";
+static char *font = "Iosevka Term:pixelsize=18:antialias=true:autohint=true";
 static int borderpx = 0;
+/* Default columns and rows numbers */
+static unsigned int cols = 132;
+static unsigned int rows = 35;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -137,14 +141,6 @@ static unsigned int defaultrcs = 257;
  * 7: Snowman ("☃")
  */
 static unsigned int cursorshape = 2;
-
-/*
- * Default columns and rows numbers
- */
-
-// ndc
-static unsigned int cols = 132;
-static unsigned int rows = 40;
 
 /*
  * Default colour and shape of the mouse cursor
