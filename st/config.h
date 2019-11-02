@@ -7,9 +7,9 @@
  */
 // ndc
 //static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
-//static char *font = "XSG Term 189:pixelsize=18:antialias=true:autohint=true";
-static char *font = "XSG S240:pixelsize=24:antialias=true:autohint=true";
-static int borderpx = 0;
+static char *font = "XSG Term 189:pixelsize=18:antialias=true:autohint=true";
+//static char *font = "XSG S240:pixelsize=24:antialias=true:autohint=true";
+static int borderpx = 8;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -144,7 +144,7 @@ static unsigned int cursorshape = 2;
 
 // ndc
 static unsigned int cols = 132;
-static unsigned int rows = 35;
+static unsigned int rows = 40;
 
 /*
  * Default colour and shape of the mouse cursor
