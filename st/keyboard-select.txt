@@ -25,7 +25,10 @@ Shortcuts for input mode :
  Return:       Return to the previous mode
 
 
-# NDC
+#############
+## nereusx
+##
+* Enter in mode with Ctrl+Shift+A
 * Home/End = beginning/end of line
 * backspace/$ = top-left/bottom-left screen
 * Return now copies to clipboard before exit
