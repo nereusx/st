@@ -7,8 +7,8 @@
  */
 // ndc
 //static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
-static char *font = "XSG Term 189:pixelsize=18:antialias=true:autohint=true";
-//static char *font = "XSG S240:pixelsize=24:antialias=true:autohint=true";
+//static char *font = "XSG Term 189:pixelsize=18:antialias=true:autohint=true";
+static char *font = "XSG S240:pixelsize=24:antialias=true:autohint=true";
 static int borderpx = 0;
 
 /*
@@ -144,7 +144,7 @@ static unsigned int cursorshape = 2;
 
 // ndc
 static unsigned int cols = 132;
-static unsigned int rows = 40;
+static unsigned int rows = 35;
 
 /*
  * Default colour and shape of the mouse cursor
@@ -195,7 +195,7 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-    { TERMMOD,              XK_Escape,      keyboard_select,{ 0 } },
+    { TERMMOD,              XK_A,      keyboard_select,{ 0 } },
 };
 
 /*
