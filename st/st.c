@@ -2662,6 +2662,8 @@ void search(int selectsearch_mode, Rune *target, int ptarget, int incr, int type
     }
 }
 
+// ndc
+// keyboard select 
 int trt_kbdselect(KeySym ksym, char *buf, int len) {
     static TCursor cu;
     static Rune target[64];
@@ -2707,6 +2709,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
         cu.x = term.c.x, cu.y = term.c.y;
         set_notifmode(0, ksym);
         return MODE_KBDSELECT;
+    case XK_m :
     case XK_s :
         if ( selectsearch_mode & 1 )
             selclear();
@@ -2715,6 +2718,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
         set_notifmode(selectsearch_mode ^= 1, ksym);
         break;
     case XK_t :
+    case XK_c :
         selextend(term.c.x, term.c.y, type ^= 3, i = 0);  /* 2 fois */
         selextend(term.c.x, term.c.y, type, i = 0);
         break;
@@ -2735,6 +2739,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
         term.c.x = cu.x, term.c.y = cu.y;
         select_or_drawcursor(selectsearch_mode = 0, type);
         in_use = quant = 0;
+		xclipcopy(); // ndc
         return MODE_KBDSELECT;
     case XK_n :
     case XK_N :

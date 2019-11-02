@@ -23,3 +23,11 @@ With h,j,k,l (also with arrow keys), you can use a quantifier. Enter a number be
 Shortcuts for input mode :
 
  Return:       Return to the previous mode
+
+
+# NDC
+* Home/End = beginning/end of line
+* backspace/$ = top-left/bottom-left screen
+* Return now copies to clipboard before exit
+* 'm' as 's' (brief)
+* 'c' as 't' (brief)
