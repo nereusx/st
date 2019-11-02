@@ -25,9 +25,9 @@ Shortcuts for input mode :
  Return:       Return to the previous mode
 
 
-#############
-## nereusx
-##
+###############
+## nereusx mods
+
 * Enter in mode with Ctrl+Shift+A
 * Home/End = beginning/end of line
 * backspace/$ = top-left/bottom-left screen
