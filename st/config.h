@@ -9,7 +9,7 @@
 //static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
 static char *font = "XSG Term 189:pixelsize=18:antialias=true:autohint=true";
 //static char *font = "XSG S240:pixelsize=24:antialias=true:autohint=true";
-static int borderpx = 4;
+static int borderpx = 0;
 
 /*
  * What program is execed by st depends of these precedence rules:
