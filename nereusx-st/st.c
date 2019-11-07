@@ -2717,8 +2717,8 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
             selstart(term.c.x, term.c.y, 0);
         set_notifmode(selectsearch_mode ^= 1, ksym);
         break;
-    case XK_t :
     case XK_c :
+    case XK_t :
         selextend(term.c.x, term.c.y, type ^= 3, i = 0);  /* 2 fois */
         selextend(term.c.x, term.c.y, type, i = 0);
         break;
