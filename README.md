@@ -8,6 +8,6 @@ Suckless simple terminal (https://st.suckless.org/)
 * select mode by keyboard (st-keyboard_select-0.8.2.diff)
 
 ## Modifications:
-* Copy-mode: Shift-PgUp / Ctrl-Shift-A
+* Copy-mode: Ctrl-Shift-A
 * Move-mode: serveral
 * More icons added
