@@ -14,8 +14,8 @@ To be used with TMUX
 * Move-mode: serveral
 * More icons added
 * Added config file (~/.strc) with the following keys
-	rows, cols, alpha, border, font
-  the syntax is the same as the config.h
+	rows, cols, alpha, border, font. 
+	The syntax is the same as the config.h
 
 example:
 ```
