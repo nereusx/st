@@ -1986,8 +1986,7 @@ void load_config()
 		strcpy(file, home);
 		strcat(file, "/.strc");
 		if ( access(file, R_OK) == 0 ) {
-			fp = fopen(file, "rt");
-			if ( fp ) {
+			if ( (fp = fopen(file, "rt")) != NULL ) {
 				while ( fgets(buf, 1024, fp) ) {
 					line ++;
 					p = buf;
@@ -2022,7 +2021,6 @@ void load_config()
 			}
 		}
 }
-
 
 int
 main(int argc, char *argv[])
