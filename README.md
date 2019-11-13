@@ -14,8 +14,11 @@ Suckless simple terminal (https://st.suckless.org/)
 * Added config file (~/.strc) with the following keys
 	rows, cols, alpha, border, font
   the syntax is the same as the config.h
-  example:
+
+example:
+```
+	# config for st
   	cols=132
 	rows=35
 	font=Liberation Mono:pixelsize=12:antialias=true:autohint=true
-
+```
