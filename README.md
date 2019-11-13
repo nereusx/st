@@ -2,6 +2,8 @@
 
 Suckless simple terminal (https://st.suckless.org/)
 
+To be used with TMUX
+
 ## Applied patches:
 * transparency (st-alpha-0.8.2.diff)
 * desktop entry added (st-desktopentry-0.8.2.diff)
