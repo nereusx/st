@@ -11,3 +11,11 @@ Suckless simple terminal (https://st.suckless.org/)
 * Copy-mode: Ctrl-Shift-A
 * Move-mode: serveral
 * More icons added
+* Added config file (~/.strc) with the following keys
+	rows, cols, alpha, border, font
+  the syntax is the same as the config.h
+  example:
+  	cols=132
+	rows=35
+	font=Liberation Mono:pixelsize=12:antialias=true:autohint=true
+

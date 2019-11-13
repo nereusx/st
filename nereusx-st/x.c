@@ -1972,12 +1972,67 @@ void keyboard_select(const Arg *dummy) {
     win.mode ^= trt_kbdselect(-1, NULL, 0);
 }
 
+// ndc:
+// load configuration file
+void load_config()
+{
+	char file[1024], buf[1024];
+	char *p, *key, *val;
+	FILE *fp;
+	const char *home = getenv("HOME");
+	int line = 0;
+
+	if ( home ) {
+		strcpy(file, home);
+		strcat(file, "/.strc");
+		if ( access(file, R_OK) == 0 ) {
+			fp = fopen(file, "rt");
+			if ( fp ) {
+				while ( fgets(buf, 1024, fp) ) {
+					line ++;
+					p = buf;
+					while ( *p == ' ' || *p == '\t' ) p ++;
+					if ( *p == '#' || *p == '\n' ) continue;
+					key = p;
+					while ( *p >= 'a' && *p <= 'z' )	p ++;
+					if ( *p != '=' ) {
+						*p = '\0'; p ++;
+						while ( *p == ' ' || *p == '\t' ) p ++;
+						}
+					if ( *p != '=' ) {
+						fprintf(stderr, "syntax error in line %d\n", line);
+						continue;
+						}
+					*p = '\0'; p ++;
+					while ( *p == ' ' || *p == '\t' ) p ++;
+					val = p;
+					while ( *p && *p != '\n' ) p ++;
+					*p = '\0';
+					
+					// nice... now copy the value
+					if ( strcmp(key, "cols") == 0 )			cols = atoi(val);
+					else if ( strcmp(key, "rows") == 0 )	rows = atoi(val);
+					else if ( strcmp(key, "border") == 0 )	borderpx = atoi(val);
+					else if ( strcmp(key, "borderpx") == 0 )	borderpx = atoi(val);
+					else if ( strcmp(key, "alpha") == 0 )	alpha = atof(val);
+					else if ( strcmp(key, "font") == 0 )	font = strdup(val);
+					}
+				fclose(fp);
+				}
+			}
+		}
+}
+
+
 int
 main(int argc, char *argv[])
 {
 	xw.l = xw.t = 0;
 	xw.isfixed = False;
 	win.cursor = cursorshape;
+
+	// ndc: add ~/.strc support
+	load_config();
 
 	ARGBEGIN {
 	case 'a':
