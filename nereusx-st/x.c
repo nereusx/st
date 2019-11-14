@@ -1972,48 +1972,77 @@ void keyboard_select(const Arg *dummy) {
     win.mode ^= trt_kbdselect(-1, NULL, 0);
 }
 
-// ndc: load configuration file
-void load_config()
+/* ndc: load configuration file */
+#define STRC_FILE		".strc"
+
+typedef struct {
+	const char *key; /* the name in ~/.strc */
+	void	*var;	/* pointer to the variable */
+	char	type;	/* type of the variable: (i)nteger, (f)loat, (s)tring */
+	} strc_keyword;
+
+/*
+ *	keyword<->variable table for ~/.strc
+ */
+static strc_keyword strc_keys[] = {
+	{ "cols",		&cols,		'i' },
+	{ "rows",		&rows,		'i' },
+	{ "alpha",		&alpha,		'f' },
+	{ "border",		&borderpx,	'i' },
+	{ "borderpx",	&borderpx,	'i' },
+	{ "font",		&font,		's' },
+	{ NULL, NULL, 0 }
+	};
+
+void
+load_config(void)
 {
-	char *p, *key, *val, *file, *home, buf[LINE_MAX];
+	char *p, *key, *val, *file, *home;
+	char buf[LINE_MAX];
 	FILE *fp;
-	int  status = 0;
+	int  i, status = 0;
 
 	if ( (home = (char *) getenv("HOME")) != NULL ) {
-		file = (char *) malloc(strlen(home) + 7);
-		strcpy(file, home);	strcat(file, "/.strc");
-		if ( (fp = fopen(file, "rt")) != NULL ) {
-			while ( fgets(buf, 1024, fp) ) {
-				p = buf;
-
-				while ( *p == ' ' || *p == '\t' ) p ++;						// skip spaces
-				if ( *p == '#' || *p == '\n' ) continue;					// comments or empty line
-				if ( *p == '?' ) { status = system(++p); continue; }		// 'if' command, nested-ifs can be add by using push/pop status
-				if ( *p == ':' ) { status = (status)?0:1; continue;  }		// 'else' command
-				if ( *p == '-' ) { status = 0; continue;  }					// 'end-if' command
-				if ( status != 0 ) continue;								// do 'if-else' check
-
-				// mark keyword
-				key = p;
-				while ( *p >= 'a' && *p <= 'z'  )	p ++;
-				while ( *p == ' ' || *p == '\t' || *p == '=' )	{ *p = '\0'; p ++; }
-
-				// mark value
-				val = p;
-				while ( *p && *p != '\n' ) p ++;
-				*p = '\0'; // actually removes the '\n'
-				
-				// nice... now copy the value
-				if ( strcmp(key, "cols") == 0 )			cols = atoi(val);
-				else if ( strcmp(key, "rows") == 0 )	rows = atoi(val);
-				else if ( strcmp(key, "border") == 0 )	borderpx = atoi(val);
-				else if ( strcmp(key, "borderpx") == 0 )	borderpx = atoi(val);
-				else if ( strcmp(key, "alpha") == 0 )	alpha = atof(val);
-				else if ( strcmp(key, "font") == 0 )	font = strdup(val);
+		if ( (file = (char *) malloc(strlen(home) + strlen(STRC_FILE) + 2)) != NULL ) {
+			sprintf(file, "%s/%s", home, STRC_FILE);
+			if ( (fp = fopen(file, "rt")) != NULL ) {
+				while ( fgets(buf, 1024, fp) ) {
+					p = buf;
+	
+					while ( *p == ' ' || *p == '\t' ) p ++;						/* skip spaces */
+					if ( *p == '#' || *p == '\n' ) continue;					/* comments or empty line */
+					if ( *p == '?' ) { status = system( ++ p ); continue; }		/* 'if' command, nested-ifs can be add by using push/pop status */
+					if ( *p == ':' ) { status = ( status )? 0 : 1; continue; }	/* 'else' command */
+					if ( *p == '-' ) { status = 0; continue;  }					/* 'end-if' command */
+					if ( status != 0 ) continue;								/* do 'if-else' check */
+	
+					/* mark keyword */
+					key = p;
+					while ( *p >= 'a' && *p <= 'z'  )	p ++;
+					while ( *p == ' ' || *p == '\t' )	*p ++ = '\0';
+					if ( *p == '=' )					*p ++ = '\0';
+	
+					/* mark value */
+					val = p;
+					while ( *p && *p != '\n' ) p ++;
+					*p = '\0'; /* actually removes the '\n' on the end of buffer */
+					
+					/* apply the values */
+					for ( i = 0; strc_keys[i].key; i ++ ) {
+						if ( strcmp(key, strc_keys[i].key) == 0 ) {
+							switch ( strc_keys[i].type ) {
+							case 'i': *((int   *) strc_keys[i].var) = atoi(val); break;
+							case 'f': *((float *) strc_keys[i].var) = atof(val); break;
+							case 's': *((char **) strc_keys[i].var) = strdup(val); break;
+								}
+							break;
+							}
+						}
+					}
+				fclose(fp);
 				}
-			fclose(fp);
+			free(file);
 			}
-		free(file);
 		}
 }
 
@@ -2024,7 +2053,7 @@ main(int argc, char *argv[])
 	xw.isfixed = False;
 	win.cursor = cursorshape;
 
-	// ndc: add ~/.strc support
+	/* ndc: add ~/.strc, configuration file support */
 	load_config();
 
 	ARGBEGIN {
