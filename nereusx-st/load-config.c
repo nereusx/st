@@ -1,5 +1,6 @@
 /*
  *	load configuration file
+ *	Copyleft (C) 2019 Nicholas Christopoulos
  */
 
 /* the file name */
