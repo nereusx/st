@@ -1972,38 +1972,35 @@ void keyboard_select(const Arg *dummy) {
     win.mode ^= trt_kbdselect(-1, NULL, 0);
 }
 
-// ndc:
-// load configuration file
+// ndc: load configuration file
 void load_config()
 {
-	char file[1024], buf[1024];
-	char *p, *key, *val;
-	FILE *fp;
-	const char *home = getenv("HOME");
+	char *p, *key, *val, *file, *home, buf[1024];
 	int line = 0;
+	FILE *fp;
 
-	if ( home ) {
-		strcpy(file, home);
-		strcat(file, "/.strc");
+	if ( (home = (char *) getenv("HOME")) != NULL ) {
+		file = (char *) malloc(strlen(home) + 7);
+		strcpy(file, home);	strcat(file, "/.strc");
 		if ( access(file, R_OK) == 0 ) {
 			if ( (fp = fopen(file, "rt")) != NULL ) {
 				while ( fgets(buf, 1024, fp) ) {
 					line ++;
 					p = buf;
 					while ( *p == ' ' || *p == '\t' ) p ++;
-					if ( *p == '#' || *p == '\n' ) continue;
+					if ( *p == '#' || *p == '\n' ) continue; // comments or empty line
+
+					// mark keyword
 					key = p;
-					while ( *p >= 'a' && *p <= 'z' )	p ++;
+					while ( *p >= 'a' && *p <= 'z'  )	p ++;
+					while ( *p == ' ' || *p == '\t' )	{ *p = '\0'; p ++; }
 					if ( *p != '=' ) {
-						*p = '\0'; p ++;
-						while ( *p == ' ' || *p == '\t' ) p ++;
-						}
-					if ( *p != '=' ) {
-						fprintf(stderr, "syntax error in line %d\n", line);
-						continue;
+						fprintf(stderr, "%s:%d syntax error; use key = value\n", file, line);
+						continue; // syntax error
 						}
 					*p = '\0'; p ++;
-					while ( *p == ' ' || *p == '\t' ) p ++;
+
+					// mark value
 					val = p;
 					while ( *p && *p != '\n' ) p ++;
 					*p = '\0';
@@ -2019,6 +2016,7 @@ void load_config()
 				fclose(fp);
 				}
 			}
+		free(file);
 		}
 }
 
