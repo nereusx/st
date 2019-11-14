@@ -1975,46 +1975,43 @@ void keyboard_select(const Arg *dummy) {
 // ndc: load configuration file
 void load_config()
 {
-	char *p, *key, *val, *file, *home, buf[1024];
-	int line = 0;
+	char *p, *key, *val, *file, *home, buf[LINE_MAX];
 	FILE *fp;
+	int  status = 0;
 
 	if ( (home = (char *) getenv("HOME")) != NULL ) {
 		file = (char *) malloc(strlen(home) + 7);
 		strcpy(file, home);	strcat(file, "/.strc");
-		if ( access(file, R_OK) == 0 ) {
-			if ( (fp = fopen(file, "rt")) != NULL ) {
-				while ( fgets(buf, 1024, fp) ) {
-					line ++;
-					p = buf;
-					while ( *p == ' ' || *p == '\t' ) p ++;
-					if ( *p == '#' || *p == '\n' ) continue; // comments or empty line
+		if ( (fp = fopen(file, "rt")) != NULL ) {
+			while ( fgets(buf, 1024, fp) ) {
+				p = buf;
 
-					// mark keyword
-					key = p;
-					while ( *p >= 'a' && *p <= 'z'  )	p ++;
-					while ( *p == ' ' || *p == '\t' )	{ *p = '\0'; p ++; }
-					if ( *p != '=' ) {
-						fprintf(stderr, "%s:%d syntax error; use key = value\n", file, line);
-						continue; // syntax error
-						}
-					*p = '\0'; p ++;
+				while ( *p == ' ' || *p == '\t' ) p ++;						// skip spaces
+				if ( *p == '#' || *p == '\n' ) continue;					// comments or empty line
+				if ( *p == '?' ) { status = system(++p); continue; }		// 'if' command, nested-ifs can be add by using push/pop status
+				if ( *p == ':' ) { status = (status)?0:1; continue;  }		// 'else' command
+				if ( *p == '-' ) { status = 0; continue;  }					// 'end-if' command
+				if ( status != 0 ) continue;								// do 'if-else' check
 
-					// mark value
-					val = p;
-					while ( *p && *p != '\n' ) p ++;
-					*p = '\0';
-					
-					// nice... now copy the value
-					if ( strcmp(key, "cols") == 0 )			cols = atoi(val);
-					else if ( strcmp(key, "rows") == 0 )	rows = atoi(val);
-					else if ( strcmp(key, "border") == 0 )	borderpx = atoi(val);
-					else if ( strcmp(key, "borderpx") == 0 )	borderpx = atoi(val);
-					else if ( strcmp(key, "alpha") == 0 )	alpha = atof(val);
-					else if ( strcmp(key, "font") == 0 )	font = strdup(val);
-					}
-				fclose(fp);
+				// mark keyword
+				key = p;
+				while ( *p >= 'a' && *p <= 'z'  )	p ++;
+				while ( *p == ' ' || *p == '\t' || *p == '=' )	{ *p = '\0'; p ++; }
+
+				// mark value
+				val = p;
+				while ( *p && *p != '\n' ) p ++;
+				*p = '\0'; // actually removes the '\n'
+				
+				// nice... now copy the value
+				if ( strcmp(key, "cols") == 0 )			cols = atoi(val);
+				else if ( strcmp(key, "rows") == 0 )	rows = atoi(val);
+				else if ( strcmp(key, "border") == 0 )	borderpx = atoi(val);
+				else if ( strcmp(key, "borderpx") == 0 )	borderpx = atoi(val);
+				else if ( strcmp(key, "alpha") == 0 )	alpha = atof(val);
+				else if ( strcmp(key, "font") == 0 )	font = strdup(val);
 				}
+			fclose(fp);
 			}
 		free(file);
 		}
