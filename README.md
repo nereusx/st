@@ -10,17 +10,22 @@ To be used with TMUX
 * select mode by keyboard (st-keyboard_select-0.8.2.diff)
 
 ## Modifications:
-* Copy-mode: Ctrl-Shift-A
-* Move-mode: serveral
-* More icons added
-* Added config file (~/.strc) with the following keys
-	rows, cols, alpha, border, font. 
+* Added config file (~/.strc) with the following keys: `rows, cols, alpha, border, font`.
+	If statement `?` else `:` and end `-`.
 	The syntax is the same as the config.h
-
 example:
 ```
 	# config for st
+	? test "$HOSTNAME" = "mypc"
+	cols=140
+	:
   	cols=132
+	-
 	rows=35
 	font=Liberation Mono:pixelsize=12:antialias=true:autohint=true
 ```
+
+* Copy-mode: Ctrl-Shift-A
+* Move-mode: serveral
+* More icons added
+
