@@ -26,6 +26,6 @@ example:
 ```
 
 * Copy-mode: Ctrl-Shift-A
-* Move-mode: serveral
+* Move-mode: several
 * More icons added
 
