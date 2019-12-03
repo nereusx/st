@@ -24,7 +24,12 @@ example:
 	rows=35
 	font=Liberation Mono:pixelsize=12:antialias=true:autohint=true
 ```
-
+* Added blinking cursor
+```
+VT100 codes:
+	\033[?12h = enable cursor blinking
+	\033[?12l = disable cursor blinking
+```	
 * Copy-mode: Ctrl-Shift-A
 * Move-mode: several
 * More icons added

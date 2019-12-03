@@ -1935,7 +1935,7 @@ run(void)
 				if (blinkset) {
 //					if (TIMEDIFF(now, lastblink) \
 //							> blinktimeout) {
-						drawtimeout.tv_nsec = 50000; /* ndc 1000 */
+						drawtimeout.tv_nsec = 10000; /* ndc 1000 */
 //					} else {
 //						drawtimeout.tv_nsec = (1E6 * \
 //							(blinktimeout - \
@@ -1975,6 +1975,7 @@ void keyboard_select(const Arg *dummy) {
 }
 
 #include "load-config.c"
+#include "blink-cursor.c"
 
 int
 main(int argc, char *argv[])
@@ -2047,6 +2048,7 @@ run:
 	xinit(cols, rows);
 	xsetenv();
 	selinit();
+	tcurs_init(); // ndc: blinking cursor
 	run();
 
 	return 0;
