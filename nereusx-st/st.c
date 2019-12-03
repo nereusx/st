@@ -2575,9 +2575,9 @@ void *tcurs_xchg(void *args)
 	while ( !t_curs_exit ) {
 		curs_blink_state = !curs_blink_state;
 		if ( !curs_blink_state )
-			usleep(1200000);
+			usleep(1250000);
 		else
-			usleep( 600000);
+			usleep( 500000);
 		}
 	pthread_exit(NULL);
 }

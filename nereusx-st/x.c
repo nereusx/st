@@ -1935,7 +1935,7 @@ run(void)
 				if (blinkset) {
 //					if (TIMEDIFF(now, lastblink) \
 //							> blinktimeout) {
-						drawtimeout.tv_nsec = 100000; /* ndc 1000 */
+						drawtimeout.tv_nsec = 50000; /* ndc 1000 */
 //					} else {
 //						drawtimeout.tv_nsec = (1E6 * \
 //							(blinktimeout - \
