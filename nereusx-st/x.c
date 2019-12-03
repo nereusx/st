@@ -1465,6 +1465,8 @@ xdrawglyph(Glyph g, int x, int y)
 	xdrawglyphfontspecs(&spec, g, numspecs, x, y);
 }
 
+int	get_blink_value(); // ndc
+
 void
 xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
 {
@@ -1475,7 +1477,7 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
 		og.mode ^= ATTR_REVERSE;
 	xdrawglyph(og, ox, oy);
 
-	if (IS_SET(MODE_HIDE))
+	if (IS_SET(MODE_HIDE) || get_blink_value())
 		return;
 
 	/*
@@ -1848,7 +1850,7 @@ run(void)
 	XEvent ev;
 	int w = win.w, h = win.h;
 	fd_set rfd;
-	int xfd = XConnectionNumber(xw.dpy), xev, blinkset = 0, dodraw = 0;
+	int xfd = XConnectionNumber(xw.dpy), xev, blinkset = 1 /* ndc */, dodraw = 0;
 	int ttyfd;
 	struct timespec drawtimeout, *tv = NULL, now, last, lastblink;
 	long deltatime;
@@ -1888,7 +1890,7 @@ run(void)
 		if (FD_ISSET(ttyfd, &rfd)) {
 			ttyread();
 			if (blinktimeout) {
-				blinkset = tattrset(ATTR_BLINK);
+//				blinkset = tattrset(ATTR_BLINK); // ndc
 				if (!blinkset)
 					MODBIT(win.mode, 0, MODE_BLINK);
 			}
@@ -1931,18 +1933,18 @@ run(void)
 				xev--;
 			if (!FD_ISSET(ttyfd, &rfd) && !FD_ISSET(xfd, &rfd)) {
 				if (blinkset) {
-					if (TIMEDIFF(now, lastblink) \
-							> blinktimeout) {
-						drawtimeout.tv_nsec = 1000;
-					} else {
-						drawtimeout.tv_nsec = (1E6 * \
-							(blinktimeout - \
-							TIMEDIFF(now,
-								lastblink)));
-					}
-					drawtimeout.tv_sec = \
-					    drawtimeout.tv_nsec / 1E9;
-					drawtimeout.tv_nsec %= (long)1E9;
+//					if (TIMEDIFF(now, lastblink) \
+//							> blinktimeout) {
+						drawtimeout.tv_nsec = 100000; /* ndc 1000 */
+//					} else {
+//						drawtimeout.tv_nsec = (1E6 * \
+//							(blinktimeout - \
+//							TIMEDIFF(now,
+//								lastblink)));
+//					}
+//					drawtimeout.tv_sec = \
+//					    drawtimeout.tv_nsec / 1E9;
+//					drawtimeout.tv_nsec %= (long)1E9;
 				} else {
 					tv = NULL;
 				}

@@ -2561,8 +2561,50 @@ drawregion(int x1, int y1, int x2, int y2)
 	}
 }
 
+// ndc: blinking cursor
+#include <pthread.h>
+#include <unistd.h>
+static pthread_t t_curs;
+static volatile int t_blink_mode = 1;
+static volatile int curs_blink_state= 0;
+static volatile int t_curs_init = 0;
+static volatile int t_curs_exit = 0;
+
+void *tcurs_xchg(void *args)
+{
+	while ( !t_curs_exit ) {
+		curs_blink_state = !curs_blink_state;
+		if ( !curs_blink_state )
+			usleep(1200000);
+		else
+			usleep( 600000);
+		}
+	pthread_exit(NULL);
+}
+
+int	get_blink_value()
+{
+	return curs_blink_state;
+}
+
+void tcurs_term()
+{
+	t_curs_exit = 1;
+	pthread_join(t_curs, NULL);
+	pthread_exit(NULL);
+}
+void tcurs_init()
+{
+	if ( t_curs_init ==  0 ) {
+		t_curs_init = 1;
+		pthread_create(&t_curs, NULL, tcurs_xchg, NULL);
+		}
+	atexit(tcurs_term);
+}
+// ndc: blinking cursor -- end
+
 void
-draw(void)
+draw_ex(void)
 {
 	int cx = term.c.x;
 
@@ -2583,6 +2625,14 @@ draw(void)
 	term.ocx = cx, term.ocy = term.c.y;
 	xfinishdraw();
 	xximspot(term.ocx, term.ocy);
+}
+
+// ndc:
+void draw(void)
+{
+	if ( !t_curs_init )
+		tcurs_init();
+	draw_ex();
 }
 
 void
