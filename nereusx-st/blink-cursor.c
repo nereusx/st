@@ -68,6 +68,8 @@ void set_blink_cursor(int mode)
 	t_blink_mode = mode;
 }
 
+int get_blink_cursor_mode()	{ return t_blink_mode; }
+
 /*
  *	initialize mode
  */

@@ -1850,7 +1850,7 @@ run(void)
 	XEvent ev;
 	int w = win.w, h = win.h;
 	fd_set rfd;
-	int xfd = XConnectionNumber(xw.dpy), xev, blinkset = 1 /* ndc */, dodraw = 0;
+	int xfd = XConnectionNumber(xw.dpy), xev, blinkset = 0, dodraw = 0;
 	int ttyfd;
 	struct timespec drawtimeout, *tv = NULL, now, last, lastblink;
 	long deltatime;
@@ -1890,7 +1890,7 @@ run(void)
 		if (FD_ISSET(ttyfd, &rfd)) {
 			ttyread();
 			if (blinktimeout) {
-//				blinkset = tattrset(ATTR_BLINK); // ndc
+				blinkset = tattrset(ATTR_BLINK);
 				if (!blinkset)
 					MODBIT(win.mode, 0, MODE_BLINK);
 			}
@@ -1932,21 +1932,27 @@ run(void)
 			if (xev && !FD_ISSET(xfd, &rfd))
 				xev--;
 			if (!FD_ISSET(ttyfd, &rfd) && !FD_ISSET(xfd, &rfd)) {
-				if (blinkset) {
-//					if (TIMEDIFF(now, lastblink) \
-//							> blinktimeout) {
-						drawtimeout.tv_nsec = 10000; /* ndc: was 1000 */
-//					} else {
-//						drawtimeout.tv_nsec = (1E6 * \
-//							(blinktimeout - \
-//							TIMEDIFF(now,
-//								lastblink)));
-//					}
-//					drawtimeout.tv_sec = \
-//					    drawtimeout.tv_nsec / 1E9;
-//					drawtimeout.tv_nsec %= (long)1E9;
-				} else {
-					tv = NULL;
+				if ( get_blink_cursor_mode() ) {
+					drawtimeout.tv_sec  = 0;
+					drawtimeout.tv_nsec = 10000;
+					}
+				else {
+					if (blinkset) {
+						if (TIMEDIFF(now, lastblink) \
+								> blinktimeout) {
+							drawtimeout.tv_nsec = 1000;
+						} else {
+							drawtimeout.tv_nsec = (1E6 * \
+								(blinktimeout - \
+								TIMEDIFF(now,
+									lastblink)));
+						}
+						drawtimeout.tv_sec = \
+						    drawtimeout.tv_nsec / 1E9;
+						drawtimeout.tv_nsec %= (long)1E9;
+					} else {
+						tv = NULL;
+					}
 				}
 			}
 		}
@@ -2048,7 +2054,7 @@ run:
 	xinit(cols, rows);
 	xsetenv();
 	selinit();
-	tcurs_init(); // ndc: blinking cursor
+	tcurs_init(); // ndc: cursor
 	run();
 
 	return 0;
