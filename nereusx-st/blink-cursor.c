@@ -55,8 +55,9 @@ void timer_handler(int signum)
 
 // returns 0 if cursor is no visible
 int	get_blink_value()			{ if ( !t_blink_mode ) return 0; return curs_blink_state; }
-// enable/disable cursor blinking
-void set_blink_cursor(int mode)	{ t_blink_mode = mode; }
+// enable/disable cursor blinking 
+void set_blink_cursor(int mode)
+{ t_blink_mode = 1 /* mode */; } // disabled because of tmux bug
 // 
 int get_blink_cursor_mode()		{ return t_blink_mode; }
 
