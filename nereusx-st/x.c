@@ -1934,13 +1934,13 @@ run(void)
 			if (!FD_ISSET(ttyfd, &rfd) && !FD_ISSET(xfd, &rfd)) {
 				if ( get_blink_cursor_mode() ) {
 					drawtimeout.tv_sec  = 0;
-					drawtimeout.tv_nsec = 10000;
+					drawtimeout.tv_nsec = 5000000;
 					}
 				else {
 					if (blinkset) {
 						if (TIMEDIFF(now, lastblink) \
 								> blinktimeout) {
-							drawtimeout.tv_nsec = 1000;
+							drawtimeout.tv_nsec = 10000;
 						} else {
 							drawtimeout.tv_nsec = (1E6 * \
 								(blinktimeout - \
