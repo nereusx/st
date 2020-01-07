@@ -3,13 +3,17 @@
  *	Copyleft (C) 2019 Nicholas Christopoulos
  */
 
-#include <pthread.h>
-#include <unistd.h>
-static pthread_t t_curs;
-static volatile int t_blink_mode = 1;
-static volatile int curs_blink_state= 0;
-static volatile int t_curs_init = 0;
-static volatile int t_curs_exit = 0;
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/time.h>
+
+static int t_blink_mode = 1;
+static int curs_blink_state= 0;
+static int t_curs_init = 0;
+static int t_curs_exit = 0;
+static struct sigaction sa;
+static struct itimerval timer;
 
 /*
  *	timing
@@ -22,53 +26,39 @@ static volatile int t_curs_exit = 0;
  *	Linux 4.2+
  *  \033[16;n] Set the cursor blink interval in milliseconds.
  */
-static volatile int t_curs_vis_ms = 1250;
-static volatile int t_curs_inv_ms =  500;
+static int t_curs_vis_ms = 1250;
+static int t_curs_inv_ms =  500;
 
 /*
  *	change visible values
  */
-void *tcurs_xchg(void *args)
+void timer_handler(int signum)
 {
-	while ( !t_curs_exit ) {
-		curs_blink_state = !curs_blink_state;
-		if ( !curs_blink_state )
-			usleep(t_curs_vis_ms * 1000);
-		else
-			usleep(t_curs_inv_ms * 1000);
+	static int count = 0;
+
+	if ( signum == SIGALRM ) {
+		count ++;
+		if ( curs_blink_state == 0 ) {
+			if ( count * 50 >= t_curs_vis_ms ) {
+				count = 0;
+				curs_blink_state = 1;
+				}
+			}
+		else {
+			if ( count * 50 >= t_curs_inv_ms ) {
+				count = 0;
+				curs_blink_state = 0;
+				}
+			}
 		}
-	pthread_exit(NULL);
 }
 
-/*
- *	returns 0 if cursor is no visible
- */
-int	get_blink_value()
-{
-	if ( !t_blink_mode )
-		return 0;
-	return curs_blink_state;	
-}
-
-/*
- *	terminate (atexit)
- */
-void tcurs_term()
-{
-	t_curs_exit = 1;
-	pthread_join(t_curs, NULL);
-	pthread_exit(NULL);
-}
-
-/*
- *	enable/disable blinking
- */
-void set_blink_cursor(int mode)
-{
-	t_blink_mode = mode;
-}
-
-int get_blink_cursor_mode()	{ return t_blink_mode; }
+// returns 0 if cursor is no visible
+int	get_blink_value()			{ if ( !t_blink_mode ) return 0; return curs_blink_state; }
+// enable/disable cursor blinking
+void set_blink_cursor(int mode)	{ t_blink_mode = mode; }
+// 
+int get_blink_cursor_mode()		{ return t_blink_mode; }
 
 /*
  *	initialize mode
@@ -76,9 +66,21 @@ int get_blink_cursor_mode()	{ return t_blink_mode; }
 void tcurs_init()
 {
 	if ( t_curs_init ==  0 ) {
+		/* Install timer_handler as the signal handler for SIGVTALRM. */
+		memset (&sa, 0, sizeof (sa));
+		sa.sa_handler = &timer_handler;
+		sigaction(SIGALRM, &sa, NULL);
+		
+		/* Configure the timer to expire after 50 msec... */
+		timer.it_value.tv_sec = 0;
+		timer.it_value.tv_usec = 50 * 1000;
+		/* ... and every 50 msec after that. */
+		timer.it_interval.tv_sec = 0;
+		timer.it_interval.tv_usec = 50 * 1000;
+		/* Start a virtual timer. It counts down whenever this process is executing. */
+		setitimer(ITIMER_REAL, &timer, NULL);
+		//
 		t_curs_init = 1;
-		pthread_create(&t_curs, NULL, tcurs_xchg, NULL);
 		}
-	atexit(tcurs_term);
 }
 
