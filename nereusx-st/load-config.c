@@ -22,7 +22,7 @@ static strc_keyword strc_keys[] = {
 	{ "alpha",		&alpha,		'f' },
 	{ "border",		&borderpx,	'i' },
 	{ "borderpx",	&borderpx,	'i' },
-	{ "font",		&font,		's' },
+	{ "font",		&opt_font,	's' },
 	{ NULL, NULL, 0 }
 	};
 

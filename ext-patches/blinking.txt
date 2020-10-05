@@ -1,0 +1,10 @@
+echo -e -n "\x1b[\x30 q" # Blinking block
+echo -e -n "\x1b[\x31 q" # Blinking block (default)
+echo -e -n "\x1b[\x32 q" # Steady block
+echo -e -n "\x1b[\x33 q" # Blinking underline
+echo -e -n "\x1b[\x34 q" # Steady underline
+echo -e -n "\x1b[\x35 q" # Blinking bar
+echo -e -n "\x1b[\x36 q" # Steady bar
+echo -e -n "\x1b[\x37 q" # Blinking st cursor
+echo -e -n "\x1b[\x38 q" # Steady st cursor
+
