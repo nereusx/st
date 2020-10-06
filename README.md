@@ -8,6 +8,7 @@ To be used with TMUX
 * transparency (st-alpha-0.8.2.diff)
 * desktop entry added (st-desktopentry-0.8.2.diff)
 * select mode by keyboard (st-keyboard_select-0.8.2.diff)
+* blinking cursor
 
 ## Modifications:
 * Added config file (~/.strc) with the following keys: `rows, cols, alpha, border, font`.
@@ -24,12 +25,7 @@ example:
 	rows=35
 	font=Liberation Mono:pixelsize=12:antialias=true:autohint=true
 ```
-* Added blinking cursor
-```
-VT100 codes:
-	\033[?12h = enable cursor blinking
-	\033[?12l = disable cursor blinking
-```	
+
 * Copy-mode: Ctrl-Shift-A
 * Move-mode: several
 * More icons added
